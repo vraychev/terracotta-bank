@@ -62,8 +62,9 @@ public class MakeDepositFunctionalTest extends AbstractEmbeddedTomcatSeleniumTes
 						new File("src/test/resources/check.png"));
 
 				Alert alert = switchToAlertEventually(driver, 2000);
+                Thread.sleep(5000);
 				Assert.fail(getTextThenDismiss(alert));
-			} catch (NoAlertPresentException e) {
+			} catch (NoAlertPresentException | InterruptedException e) {
 				// awesome!
 			}
 		}
