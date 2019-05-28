@@ -17,20 +17,20 @@ import com.joshcummings.codeplay.terracotta.service.MessageService;
  */
 @WebServlet("/contactus")
 public class ContactUsServlet extends ApplicationAwareServlet {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private Long nextMessageId = 2L;
-	
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String name = request.getParameter("contactName");
-		String email = request.getParameter("contactEmail");
-		String subject = request.getParameter("contactSubject");
-		String message = request.getParameter("contactMessage");
-		Message m = new Message(String.valueOf(nextMessageId++), name, email, subject, message);
-		context.get(MessageService.class).addMessage(m);
-	}
+    private Long nextMessageId = 2L;
+
+    /**
+     * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+     */
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String name = request.getParameter("contactName");
+        String email = request.getParameter("contactEmail");
+        String subject = request.getParameter("contactSubject");
+        String message = request.getParameter("contactMessage");
+        Message m = new Message(String.valueOf(nextMessageId++), name, email, subject, message);
+        context.get(MessageService.class).addMessage(m);
+    }
 
 }

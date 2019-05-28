@@ -16,81 +16,81 @@ import org.apache.commons.io.IOUtils;
 import org.mockito.Mockito;
 
 public class ContentSecurityPolicyViolationsServletUnitTest {
-	private ContentSecurityPolicyViolationsServlet servlet = new ContentSecurityPolicyViolationsServlet();
-	private SimpleDateFormat jdkDefaultFormat = new SimpleDateFormat("MMM dd, yyyy h:mm:ss a");
-	private SimpleDateFormat isoStandardFormat = new SimpleDateFormat("YYYY-MM-dd HH:mm:ss");
-	
-	private HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
-	
-	public static void main(String[] args) throws Exception {
-		ContentSecurityPolicyViolationsServletUnitTest test = new ContentSecurityPolicyViolationsServletUnitTest();
-		test.testWithJavaLogging();
-	}
-	
-	public void testWithJavaLogging() throws ServletException, IOException {
-		String sampleCsp = IOUtils.toString(new InputStreamReader(this.getClass().getClassLoader().getResourceAsStream("sample-csp-report")));
-		String falseLog = jdkDefaultFormat.format(new Date()) + " oracle.jdbc.driver.OracleDriver connect\n"
-				+ "SEVERE: Connection Refused";
-				
-		InputStream injectedLog = new ByteArrayInputStream((sampleCsp + "\n" + falseLog).getBytes());
-					
-		Mockito.when(request.getInputStream()).thenReturn(new MockServletInputStream(injectedLog));
-		
-		servlet.doPost(request, null);
-	}
+    private ContentSecurityPolicyViolationsServlet servlet = new ContentSecurityPolicyViolationsServlet();
+    private SimpleDateFormat jdkDefaultFormat = new SimpleDateFormat("MMM dd, yyyy h:mm:ss a");
+    private SimpleDateFormat isoStandardFormat = new SimpleDateFormat("YYYY-MM-dd HH:mm:ss");
 
-	public void testWithLog4j() throws ServletException, IOException {
-		String sampleCsp = IOUtils.toString(new InputStreamReader(this.getClass().getClassLoader().getResourceAsStream("sample-csp-report")));
-		String falseLog = isoStandardFormat.format(new Date()) + " "
-				+ "ERROR oracle.jdbc.driver.OracleDriver:587 - Connection Refused";
-				
-		InputStream injectedLog = new ByteArrayInputStream((sampleCsp + "\n" + falseLog).getBytes());
-					
-		Mockito.when(request.getInputStream()).thenReturn(new MockServletInputStream(injectedLog));
-		
-		servlet.doPost(request, null);
-	}
-	
-	public void testWithLogback() throws ServletException, IOException {
-		String sampleCsp = IOUtils.toString(new InputStreamReader(this.getClass().getClassLoader().getResourceAsStream("sample-csp-report")));
-		String falseLog = isoStandardFormat.format(new Date()) + " [http-nio-8080-exec-6] ERROR oracle.jdbc.driver.OracleDriver - Connection Refused";
-				
-		InputStream injectedLog = new ByteArrayInputStream((sampleCsp + "\n" + falseLog).getBytes());
-					
-		Mockito.when(request.getInputStream()).thenReturn(new MockServletInputStream(injectedLog));
-		
-		servlet.doPost(request, null);
-	}
-	
-	private class MockServletInputStream extends ServletInputStream {
-		private InputStream delegate;
-		private int next = -1;
-		
-		public MockServletInputStream(InputStream delegate) throws IOException {
-			this.delegate = delegate;
-			next = delegate.read();
-		}
-		
-		@Override
-		public boolean isFinished() {
-			return next == -1;
-		}
+    private HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
 
-		@Override
-		public boolean isReady() {
-			return true;
-		}
+    public static void main(String[] args) throws Exception {
+        ContentSecurityPolicyViolationsServletUnitTest test = new ContentSecurityPolicyViolationsServletUnitTest();
+        test.testWithJavaLogging();
+    }
 
-		@Override
-		public void setReadListener(ReadListener readListener) {
-		}
+    public void testWithJavaLogging() throws ServletException, IOException {
+        String sampleCsp = IOUtils.toString(new InputStreamReader(this.getClass().getClassLoader().getResourceAsStream("sample-csp-report")));
+        String falseLog = jdkDefaultFormat.format(new Date()) + " oracle.jdbc.driver.OracleDriver connect\n"
+            + "SEVERE: Connection Refused";
 
-		@Override
-		public int read() throws IOException {
-			int toReturn = next;
-			next = delegate.read();
-			return toReturn;
-		}
-		
-	}
+        InputStream injectedLog = new ByteArrayInputStream((sampleCsp + "\n" + falseLog).getBytes());
+
+        Mockito.when(request.getInputStream()).thenReturn(new MockServletInputStream(injectedLog));
+
+        servlet.doPost(request, null);
+    }
+
+    public void testWithLog4j() throws ServletException, IOException {
+        String sampleCsp = IOUtils.toString(new InputStreamReader(this.getClass().getClassLoader().getResourceAsStream("sample-csp-report")));
+        String falseLog = isoStandardFormat.format(new Date()) + " "
+            + "ERROR oracle.jdbc.driver.OracleDriver:587 - Connection Refused";
+
+        InputStream injectedLog = new ByteArrayInputStream((sampleCsp + "\n" + falseLog).getBytes());
+
+        Mockito.when(request.getInputStream()).thenReturn(new MockServletInputStream(injectedLog));
+
+        servlet.doPost(request, null);
+    }
+
+    public void testWithLogback() throws ServletException, IOException {
+        String sampleCsp = IOUtils.toString(new InputStreamReader(this.getClass().getClassLoader().getResourceAsStream("sample-csp-report")));
+        String falseLog = isoStandardFormat.format(new Date()) + " [http-nio-8080-exec-6] ERROR oracle.jdbc.driver.OracleDriver - Connection Refused";
+
+        InputStream injectedLog = new ByteArrayInputStream((sampleCsp + "\n" + falseLog).getBytes());
+
+        Mockito.when(request.getInputStream()).thenReturn(new MockServletInputStream(injectedLog));
+
+        servlet.doPost(request, null);
+    }
+
+    private class MockServletInputStream extends ServletInputStream {
+        private InputStream delegate;
+        private int next = -1;
+
+        public MockServletInputStream(InputStream delegate) throws IOException {
+            this.delegate = delegate;
+            next = delegate.read();
+        }
+
+        @Override
+        public boolean isFinished() {
+            return next == -1;
+        }
+
+        @Override
+        public boolean isReady() {
+            return true;
+        }
+
+        @Override
+        public void setReadListener(ReadListener readListener) {
+        }
+
+        @Override
+        public int read() throws IOException {
+            int toReturn = next;
+            next = delegate.read();
+            return toReturn;
+        }
+
+    }
 }

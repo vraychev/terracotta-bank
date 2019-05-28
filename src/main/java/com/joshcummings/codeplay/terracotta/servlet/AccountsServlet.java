@@ -18,26 +18,26 @@ import com.joshcummings.codeplay.terracotta.service.AccountService;
  */
 @WebServlet("/showAccounts")
 public class AccountsServlet extends ApplicationAwareServlet {
-	private static final long serialVersionUID = 1L;
-	
-	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		if ( request.getSession().getAttribute("authenticatedUser") == null ) {
-			response.sendRedirect(request.getContextPath() + "/employee.jsp?relay=" + request.getRequestURL().toString());
-		} else {
-			Set<Account> accounts = context.get(AccountService.class).findAll();
-			request.setAttribute("accounts", accounts);
-			request.getRequestDispatcher("/WEB-INF/accounts.jsp").forward(request, response);
-		}
-	}
+    private static final long serialVersionUID = 1L;
 
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		doGet(request, response);
-	}
+    /**
+     * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+     */
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        if (request.getSession().getAttribute("authenticatedUser") == null) {
+            response.sendRedirect(request.getContextPath() + "/employee.jsp?relay=" + request.getRequestURL().toString());
+        } else {
+            Set<Account> accounts = context.get(AccountService.class).findAll();
+            request.setAttribute("accounts", accounts);
+            request.getRequestDispatcher("/WEB-INF/accounts.jsp").forward(request, response);
+        }
+    }
+
+    /**
+     * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+     */
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        doGet(request, response);
+    }
 
 }

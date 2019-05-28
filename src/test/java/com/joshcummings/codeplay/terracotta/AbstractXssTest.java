@@ -1,20 +1,18 @@
 package com.joshcummings.codeplay.terracotta;
 
 /**
- * 
- * @deprecated - Use {@code com.joshcummings.codeplay.terracotta.testng.XssCheatSheet} instead
  * @author Josh
- *
+ * @deprecated - Use {@code com.joshcummings.codeplay.terracotta.testng.XssCheatSheet} instead
  */
 @Deprecated
 public class AbstractXssTest extends AbstractEmbeddedTomcatSeleniumTest {
-	protected static final String ALERT = "alert(\"%s is vulnerable on \" + document.domain);";
-	
-	//*
-	protected static final String[] templates = {
-			"<script>" + ALERT + "</script>",
-	};
-	//*/
+    protected static final String ALERT = "alert(\"%s is vulnerable on \" + document.domain);";
+
+    //*
+    protected static final String[] templates = {
+        "<script>" + ALERT + "</script>",
+    };
+    //*/
 	
 	/*
 	protected String[] templates = {
@@ -26,8 +24,8 @@ public class AbstractXssTest extends AbstractEmbeddedTomcatSeleniumTest {
 			"+Adw-script+AD4-" + ALERT + "+Adw-/script+AD4-", //UTF-7 attack
 			
 	};//*/
-	
-	protected String escapeQuotes(String template) {
-		return template.replace("\\", "\\\\").replace("\"", "\\\"");
-	}
+
+    protected String escapeQuotes(String template) {
+        return template.replace("\\", "\\\\").replace("\"", "\\\"");
+    }
 }

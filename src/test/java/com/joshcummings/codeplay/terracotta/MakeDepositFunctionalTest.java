@@ -29,172 +29,170 @@ import org.testng.annotations.Test;
 import com.joshcummings.codeplay.terracotta.testng.XssCheatSheet;
 
 public class MakeDepositFunctionalTest extends AbstractEmbeddedTomcatSeleniumTest {
-	@BeforeClass(alwaysRun = true)
-	public void doLogin() {
-		login("john.coltraine", "j0hn");
-	}
+    private Path notAnImage = Paths.get("evil/notAnImage.txt");
+    private Path stillNotAnImage = Paths.get("evil/notAnImage.jpg");
+    private Path reallyBigImage = Paths.get("evil/reallyBig.jpg");
+    private Path withVirus = Paths.get("evil/withVirus.jpg");
+    private Path real = Paths.get("evil/realImage.jpg");
+    private Path uploadedCheck1 = Paths.get("images/checks/620");
+    private Path uploadedCheck2 = Paths.get("images/checks/621");
+    private Path uploadedCheck3 = Paths.get("images/checks/622");
+    private Path uploadedCheck4 = Paths.get("images/checks/623");
+    private Path uploadedDoubleExtension = Paths.get("images/checks/index.jsp;.jpg");
+    private Path uploadedSchema = Paths.get("target/classes/evil.schema.sql");
 
-	@AfterClass(alwaysRun = true)
-	public void doLogout() {
-		logout();
-	}
+    @BeforeClass(alwaysRun = true)
+    public void doLogin() {
+        login("john.coltraine", "j0hn");
+    }
 
-	protected void makeDeposit(String accountNumber, String checkNumber, String amount, File image) {
-		driver.findElement(By.name("depositAccountNumber")).sendKeys(accountNumber);
-		driver.findElement(By.name("depositCheckNumber")).sendKeys(checkNumber);
-		driver.findElement(By.name("depositAmount")).sendKeys(amount);
-		driver.findElement(By.name("depositCheckImage")).sendKeys(image.getAbsolutePath());
+    @AfterClass(alwaysRun = true)
+    public void doLogout() {
+        logout();
+    }
 
-		ignoreErrors(() -> driver.findElement(By.name("deposit")).submit());
-	}
+    protected void makeDeposit(String accountNumber, String checkNumber, String amount, File image) {
+        driver.findElement(By.name("depositAccountNumber")).sendKeys(accountNumber);
+        driver.findElement(By.name("depositCheckNumber")).sendKeys(checkNumber);
+        driver.findElement(By.name("depositAmount")).sendKeys(amount);
+        driver.findElement(By.name("depositCheckImage")).sendKeys(image.getAbsolutePath());
 
-	@Test(groups = "web")
-	public void testMakeDepositForXSS() {
-		for (String template : new XssCheatSheet(true)) {
-			goToPage("/");
+        ignoreErrors(() -> driver.findElement(By.name("deposit")).submit());
+    }
 
-			try {
-				String depositAccountNumberXss = String.format(template, "depositAccountNumber");
-				String depositCheckNumberXss = String.format(template, "depositCheckNumber");
-				String depositAmountXss = String.format(template, "depositAmount");
+    @Test(groups = "web")
+    public void testMakeDepositForXSS() {
+        for (String template : new XssCheatSheet(true)) {
+            goToPage("/");
 
-				makeDeposit(depositAccountNumberXss, depositCheckNumberXss, depositAmountXss,
-						new File("src/test/resources/check.png"));
+            try {
+                String depositAccountNumberXss = String.format(template, "depositAccountNumber");
+                String depositCheckNumberXss = String.format(template, "depositCheckNumber");
+                String depositAmountXss = String.format(template, "depositAmount");
 
-				Alert alert = switchToAlertEventually(driver, 2000);
+                makeDeposit(depositAccountNumberXss, depositCheckNumberXss, depositAmountXss,
+                    new File("src/test/resources/check.png"));
+
+                Alert alert = switchToAlertEventually(driver, 2000);
                 Thread.sleep(5000);
-				Assert.fail(getTextThenDismiss(alert));
-			} catch (NoAlertPresentException | InterruptedException e) {
-				// awesome!
-			}
-		}
-	}
+                Assert.fail(getTextThenDismiss(alert));
+            } catch (NoAlertPresentException | InterruptedException e) {
+                // awesome!
+            }
+        }
+    }
 
+    protected byte[] attemptMaliciousUpload(String maliciousCheckNumber, File maliciousImage) throws IOException {
+        byte[] source = java.nio.file.Files.readAllBytes(Paths.get(maliciousImage.toURI()));
 
-	protected byte[] attemptMaliciousUpload(String maliciousCheckNumber, File maliciousImage) throws IOException {
-		byte[] source = java.nio.file.Files.readAllBytes(Paths.get(maliciousImage.toURI()));
+        String depositAccountNumber = "987654321";
+        String depositCheckNumber = maliciousCheckNumber;
+        String depositAmount = "450.00";
 
-		String depositAccountNumber = "987654321";
-		String depositCheckNumber = maliciousCheckNumber;
-		String depositAmount = "450.00";
+        makeDeposit(depositAccountNumber, depositCheckNumber, depositAmount, maliciousImage);
 
-		makeDeposit(depositAccountNumber, depositCheckNumber, depositAmount, maliciousImage);
+        return source;
+    }
 
-		return source;
-	}
-	
-	protected byte[] attemptTraversedLookup(String maliciousCheckNumber) throws IOException {
-		String checkLookupNumber = maliciousCheckNumber;
+    protected byte[] attemptTraversedLookup(String maliciousCheckNumber) throws IOException {
+        String checkLookupNumber = maliciousCheckNumber;
 
-		try ( CloseableHttpResponse response =
-				http.post("/checkLookup", new BasicNameValuePair("checkLookupNumber", checkLookupNumber)) ) {
-			ByteArrayOutputStream destination = new ByteArrayOutputStream();
-			IOUtils.copy(response.getEntity().getContent(), destination);
-	
-			return destination.toByteArray();
-		}
-	}
+        try (CloseableHttpResponse response =
+                 http.post("/checkLookup", new BasicNameValuePair("checkLookupNumber", checkLookupNumber))) {
+            ByteArrayOutputStream destination = new ByteArrayOutputStream();
+            IOUtils.copy(response.getEntity().getContent(), destination);
 
-	protected boolean attemptRoundTrip(String maliciousCheckNumber, File maliciousImage) throws IOException {
-		byte[] source = attemptMaliciousUpload(maliciousCheckNumber, maliciousImage);
-		byte[] destination = attemptTraversedLookup(maliciousCheckNumber);
+            return destination.toByteArray();
+        }
+    }
 
-		return Arrays.equals(destination, source);
-	}
-	
-	protected void removeIfPresent(Path path) {
-		File uploaded = path.toFile();
-		if (uploaded.exists()) {
-			uploaded.delete();
-		}
-	}
+    protected boolean attemptRoundTrip(String maliciousCheckNumber, File maliciousImage) throws IOException {
+        byte[] source = attemptMaliciousUpload(maliciousCheckNumber, maliciousImage);
+        byte[] destination = attemptTraversedLookup(maliciousCheckNumber);
 
-	private Path notAnImage = Paths.get("evil/notAnImage.txt");
-	private Path stillNotAnImage = Paths.get("evil/notAnImage.jpg");
-	private Path reallyBigImage = Paths.get("evil/reallyBig.jpg");
-	private Path withVirus = Paths.get("evil/withVirus.jpg");
-	private Path real = Paths.get("evil/realImage.jpg");
-	
-	private Path uploadedCheck1 = Paths.get("images/checks/620");
-	private Path uploadedCheck2 = Paths.get("images/checks/621");
-	private Path uploadedCheck3 = Paths.get("images/checks/622");
-	private Path uploadedCheck4 = Paths.get("images/checks/623");
-	private Path uploadedDoubleExtension = Paths.get("images/checks/index.jsp;.jpg");
-	private Path uploadedSchema = Paths.get("target/classes/evil.schema.sql");
-	
-	@AfterMethod(alwaysRun = true)
-	public void removeFiles() {
-		removeIfPresent(notAnImage);
-		removeIfPresent(stillNotAnImage);
-		removeIfPresent(reallyBigImage);
-		removeIfPresent(withVirus);
-		removeIfPresent(uploadedCheck1);
-		removeIfPresent(uploadedCheck2);
-		removeIfPresent(uploadedCheck3);
-		removeIfPresent(uploadedCheck4);
-		removeIfPresent(uploadedDoubleExtension);
-		removeIfPresent(uploadedSchema);
-	}
+        return Arrays.equals(destination, source);
+    }
 
-	@Test(groups="filesystem")
-	public void testMakeDepositWithNonImage() throws IOException {
-		goToPage("/");
+    protected void removeIfPresent(Path path) {
+        File uploaded = path.toFile();
+        if (uploaded.exists()) {
+            uploaded.delete();
+        }
+    }
 
-		File toUpload = Files.write(notAnImage, "random content".getBytes()).toFile();
-		Assert.assertFalse(attemptRoundTrip("620", toUpload), toUpload.getName() + " was uploaded. :(");
-	}
-	
-	@Test(groups="filesystem")
-	public void testMakeDepositWithMasqueradingImage() throws IOException {
-		goToPage("/");
-		File toUpload = Files.write(stillNotAnImage, "random content".getBytes()).toFile();
-		Assert.assertFalse(attemptRoundTrip("621", toUpload), toUpload.getName() + " was uploaded. :(");
-	}
-	
-	@Test(groups="filesystem")
-	public void testMakeDepositWithTooBigImage() throws IOException {
-		goToPage("/");
-		Random rnd = new Random();
-		BufferedImage img = new BufferedImage(5000, 5000, BufferedImage.TYPE_INT_ARGB);
-		for ( int i = 0; i < img.getWidth(); i++ ) {
-			for ( int j = 0; j < img.getHeight(); j++ ) {
-				img.setRGB(i, j, rnd.nextInt(256));
-			}
-		}
-		File toUpload = reallyBigImage.toFile();
-		ImageIO.write(img, "jpg", toUpload);
-		Assert.assertFalse(attemptRoundTrip("622", toUpload), toUpload.getName() + " was uploaded. :(");
-	}
-	
-	@Test(groups="filesystem")
-	public void testMakeDepositWithVirus() throws IOException {
-		goToPage("/");
-	
-		File toUpload = withVirus.toFile();
-		try ( PrintWriter pw = new PrintWriter(new FileWriter(toUpload)) ) {
-			pw.println("X5O!P%@AP[4\\PZX54(P^)7CC)7}" + "$EICAR-STANDARD-ANTIVIRUS-TEST-FILE!$H+H*");
-		}
-		Assert.assertFalse(attemptRoundTrip("623", toUpload), toUpload.getName() + " was uploaded. :(");
-	}
-	
-	@Test(groups="filesystem")
-	public void testMakeDepositWithDoubleExtension() throws IOException {
-		goToPage("/");
-		
-		BufferedImage img = new BufferedImage(10, 10, BufferedImage.TYPE_INT_ARGB);
-		File toUpload = real.toFile();
-		ImageIO.write(img, "jpg", toUpload);
-		Assert.assertFalse(attemptRoundTrip("index.jsp;.jpg", toUpload), toUpload.getName() + " was uploaded as index.jsp;.jpg. :(");
-	}
-	
-	@Test(groups="filesystem")
-	public void testMakeDepositToProtectedDirectory() throws IOException {
-		goToPage("/");
-		
-		File toUpload = Files.write(notAnImage, 
-				("INSERT INTO user (id, name, email, username, password, is_admin) "
-				+ "VALUES (12345, 'Evil Doer', 'evil@doer.com', 'evil.user', 'alwaysbeevil', true)").getBytes()).toFile();
-		Assert.assertFalse(attemptRoundTrip("../../target/classes/evil.schema.sql",
-				toUpload), "schema.sql was uploaded. :(");
-	}
+    @AfterMethod(alwaysRun = true)
+    public void removeFiles() {
+        removeIfPresent(notAnImage);
+        removeIfPresent(stillNotAnImage);
+        removeIfPresent(reallyBigImage);
+        removeIfPresent(withVirus);
+        removeIfPresent(uploadedCheck1);
+        removeIfPresent(uploadedCheck2);
+        removeIfPresent(uploadedCheck3);
+        removeIfPresent(uploadedCheck4);
+        removeIfPresent(uploadedDoubleExtension);
+        removeIfPresent(uploadedSchema);
+    }
+
+    @Test(groups = "filesystem")
+    public void testMakeDepositWithNonImage() throws IOException {
+        goToPage("/");
+
+        File toUpload = Files.write(notAnImage, "random content".getBytes()).toFile();
+        Assert.assertFalse(attemptRoundTrip("620", toUpload), toUpload.getName() + " was uploaded. :(");
+    }
+
+    @Test(groups = "filesystem")
+    public void testMakeDepositWithMasqueradingImage() throws IOException {
+        goToPage("/");
+        File toUpload = Files.write(stillNotAnImage, "random content".getBytes()).toFile();
+        Assert.assertFalse(attemptRoundTrip("621", toUpload), toUpload.getName() + " was uploaded. :(");
+    }
+
+    @Test(groups = "filesystem")
+    public void testMakeDepositWithTooBigImage() throws IOException {
+        goToPage("/");
+        Random rnd = new Random();
+        BufferedImage img = new BufferedImage(5000, 5000, BufferedImage.TYPE_INT_ARGB);
+        for (int i = 0; i < img.getWidth(); i++) {
+            for (int j = 0; j < img.getHeight(); j++) {
+                img.setRGB(i, j, rnd.nextInt(256));
+            }
+        }
+        File toUpload = reallyBigImage.toFile();
+        ImageIO.write(img, "jpg", toUpload);
+        Assert.assertFalse(attemptRoundTrip("622", toUpload), toUpload.getName() + " was uploaded. :(");
+    }
+
+    @Test(groups = "filesystem")
+    public void testMakeDepositWithVirus() throws IOException {
+        goToPage("/");
+
+        File toUpload = withVirus.toFile();
+        try (PrintWriter pw = new PrintWriter(new FileWriter(toUpload))) {
+            pw.println("X5O!P%@AP[4\\PZX54(P^)7CC)7}" + "$EICAR-STANDARD-ANTIVIRUS-TEST-FILE!$H+H*");
+        }
+        Assert.assertFalse(attemptRoundTrip("623", toUpload), toUpload.getName() + " was uploaded. :(");
+    }
+
+    @Test(groups = "filesystem")
+    public void testMakeDepositWithDoubleExtension() throws IOException {
+        goToPage("/");
+
+        BufferedImage img = new BufferedImage(10, 10, BufferedImage.TYPE_INT_ARGB);
+        File toUpload = real.toFile();
+        ImageIO.write(img, "jpg", toUpload);
+        Assert.assertFalse(attemptRoundTrip("index.jsp;.jpg", toUpload), toUpload.getName() + " was uploaded as index.jsp;.jpg. :(");
+    }
+
+    @Test(groups = "filesystem")
+    public void testMakeDepositToProtectedDirectory() throws IOException {
+        goToPage("/");
+
+        File toUpload = Files.write(notAnImage,
+            ("INSERT INTO user (id, name, email, username, password, is_admin) "
+                + "VALUES (12345, 'Evil Doer', 'evil@doer.com', 'evil.user', 'alwaysbeevil', true)").getBytes()).toFile();
+        Assert.assertFalse(attemptRoundTrip("../../target/classes/evil.schema.sql",
+            toUpload), "schema.sql was uploaded. :(");
+    }
 }

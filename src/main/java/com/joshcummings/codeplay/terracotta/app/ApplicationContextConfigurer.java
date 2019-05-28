@@ -17,33 +17,32 @@ import com.joshcummings.codeplay.terracotta.service.UserService;
 
 /**
  * Application Lifecycle Listener implementation class ApplicationContextConfigurer
- *
  */
 @WebListener
 public class ApplicationContextConfigurer implements ServletContextListener {
-	private final ApplicationContext context = new ApplicationContext();
-	
-	/**
+    private final ApplicationContext context = new ApplicationContext();
+
+    /**
      * @see ServletContextListener#contextDestroyed(ServletContextEvent)
      */
-    public void contextDestroyed(ServletContextEvent arg0)  { 
-    	context.clear();
+    public void contextDestroyed(ServletContextEvent arg0) {
+        context.clear();
     }
 
-	/**
+    /**
      * @see ServletContextListener#contextInitialized(ServletContextEvent)
      */
     public void contextInitialized(ServletContextEvent arg0) {
-    	context.set(new AccountService());
-    	context.set(new UserService());
-    	context.set(new CheckService());
-    	context.set(new EmailService());
-    	context.set(new MessageService());
-    	context.set(new RedirectCache());
-    	context.put(ImageDetector.class, new VirusCheckingImageDetector(new TikaBasedImageDetector()));
-    	context.put(CsrfTokenRepository.class, new CookieBasedCsrfTokenRepository());
-    	arg0.getServletContext().setAttribute("applicationContext", context);
-    	
+        context.set(new AccountService());
+        context.set(new UserService());
+        context.set(new CheckService());
+        context.set(new EmailService());
+        context.set(new MessageService());
+        context.set(new RedirectCache());
+        context.put(ImageDetector.class, new VirusCheckingImageDetector(new TikaBasedImageDetector()));
+        context.put(CsrfTokenRepository.class, new CookieBasedCsrfTokenRepository());
+        arg0.getServletContext().setAttribute("applicationContext", context);
+
     }
-	
+
 }

@@ -17,29 +17,29 @@ import com.joshcummings.codeplay.terracotta.service.CheckService;
  */
 @WebServlet("/checkLookup")
 public class CheckLookupServlet extends ApplicationAwareServlet {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String checkNumber = request.getParameter("checkLookupNumber");
-		try {
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			context.get(CheckService.class).findCheckImage(checkNumber, baos);
-			response.setContentType("image/jpg");
-			response.getOutputStream().write(baos.toByteArray());
-			response.flushBuffer();
-		} catch ( IllegalArgumentException e ) {
-			response.setStatus(400);
-			request.setAttribute("message", checkNumber + " is invalid");
-			request.getRequestDispatcher("/WEB-INF/json/error.jsp").forward(request, response);
-		}
-	}
-	
-	@Override
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		doPost(request, response);
-	}
+    /**
+     * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+     */
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String checkNumber = request.getParameter("checkLookupNumber");
+        try {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            context.get(CheckService.class).findCheckImage(checkNumber, baos);
+            response.setContentType("image/jpg");
+            response.getOutputStream().write(baos.toByteArray());
+            response.flushBuffer();
+        } catch (IllegalArgumentException e) {
+            response.setStatus(400);
+            request.setAttribute("message", checkNumber + " is invalid");
+            request.getRequestDispatcher("/WEB-INF/json/error.jsp").forward(request, response);
+        }
+    }
+
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        doPost(request, response);
+    }
 
 }

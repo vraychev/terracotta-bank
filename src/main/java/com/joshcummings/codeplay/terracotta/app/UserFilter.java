@@ -18,32 +18,32 @@ import com.joshcummings.codeplay.terracotta.service.AccountService;
 
 @WebFilter("/*")
 public class UserFilter implements Filter {
-	private ApplicationContext context;
-	
-	@Override
-	public void init(FilterConfig filterConfig) throws ServletException {
-		context = (ApplicationContext)filterConfig.getServletContext().getAttribute("applicationContext");
-	}
+    private ApplicationContext context;
 
-	@Override
-	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
-			throws IOException, ServletException {
-		try {
-			User user = (User)((HttpServletRequest)request).getSession().getAttribute("authenticatedUser");
-			if ( user != null ) {
-				AccountService accountService = context.get(AccountService.class);
-				Set<Account> accounts = accountService.findByUsername(user.getUsername());
-				request.setAttribute("authenticatedAccounts", accounts);
-			}
-		} finally {
-			chain.doFilter(request, response);
-		}
-	}
+    @Override
+    public void init(FilterConfig filterConfig) throws ServletException {
+        context = (ApplicationContext) filterConfig.getServletContext().getAttribute("applicationContext");
+    }
 
-	@Override
-	public void destroy() {
-		// TODO Auto-generated method stub
-		
-	}
+    @Override
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+        throws IOException, ServletException {
+        try {
+            User user = (User) ((HttpServletRequest) request).getSession().getAttribute("authenticatedUser");
+            if (user != null) {
+                AccountService accountService = context.get(AccountService.class);
+                Set<Account> accounts = accountService.findByUsername(user.getUsername());
+                request.setAttribute("authenticatedAccounts", accounts);
+            }
+        } finally {
+            chain.doFilter(request, response);
+        }
+    }
+
+    @Override
+    public void destroy() {
+        // TODO Auto-generated method stub
+
+    }
 
 }

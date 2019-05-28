@@ -4,5 +4,5 @@ import javax.servlet.Filter;
 import javax.servlet.http.HttpServletRequest;
 
 public interface CsrfDetectionFilter extends Filter {
-	boolean hasCsrf(HttpServletRequest request);
+    boolean hasCsrf(HttpServletRequest request);
 }

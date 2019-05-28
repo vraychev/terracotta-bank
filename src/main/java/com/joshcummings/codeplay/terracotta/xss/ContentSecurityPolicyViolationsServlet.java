@@ -24,45 +24,45 @@ import com.google.gson.annotations.SerializedName;
  */
 @WebServlet("/cspViolation")
 public class ContentSecurityPolicyViolationsServlet extends HttpServlet {
-	private static final long serialVersionUID = 1L;
-	private static final Long CSP_MAX_SIZE = 5000L;
-	
-	private final Logger log = LoggerFactory.getLogger(this.getClass());
-	private final Gson gson = new Gson();
-	
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		InputStream body = new BoundedInputStream(request.getInputStream(), CSP_MAX_SIZE);
-		InputStreamReader reader = new InputStreamReader(body);
-		String reportJson = IOUtils.toString(reader);
-		reportJson = ESAPI.encoder().canonicalize(reportJson);
-		
-		// any other validation we want to do
-		
-		ContentSecurityReportEnvelope envelope = gson.fromJson(reportJson, ContentSecurityReportEnvelope.class);
-		log.error(gson.toJson(envelope));
-	}
-	
-	private class ContentSecurityReportEnvelope {
-		@SerializedName("csp-report")
-		private ContentSecurityReport cspReport;
-	}
-	
-	private class ContentSecurityReport {
-		@SerializedName("document-uri")
-		private String documentUri;
-		
-		private String referrer;
-		
-		@SerializedName("blocked-uri")
-		private String blockedUri;
-		
-		@SerializedName("violated-directive")
-		private String violatedDirective;
-		
-		@SerializedName("original-policy")
-		private String originalPolicy;
-	}
+    private static final long serialVersionUID = 1L;
+    private static final Long CSP_MAX_SIZE = 5000L;
+
+    private final Logger log = LoggerFactory.getLogger(this.getClass());
+    private final Gson gson = new Gson();
+
+    /**
+     * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+     */
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        InputStream body = new BoundedInputStream(request.getInputStream(), CSP_MAX_SIZE);
+        InputStreamReader reader = new InputStreamReader(body);
+        String reportJson = IOUtils.toString(reader);
+        reportJson = ESAPI.encoder().canonicalize(reportJson);
+
+        // any other validation we want to do
+
+        ContentSecurityReportEnvelope envelope = gson.fromJson(reportJson, ContentSecurityReportEnvelope.class);
+        log.error(gson.toJson(envelope));
+    }
+
+    private class ContentSecurityReportEnvelope {
+        @SerializedName("csp-report")
+        private ContentSecurityReport cspReport;
+    }
+
+    private class ContentSecurityReport {
+        @SerializedName("document-uri")
+        private String documentUri;
+
+        private String referrer;
+
+        @SerializedName("blocked-uri")
+        private String blockedUri;
+
+        @SerializedName("violated-directive")
+        private String violatedDirective;
+
+        @SerializedName("original-policy")
+        private String originalPolicy;
+    }
 }
