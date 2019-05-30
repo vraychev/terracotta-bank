@@ -1,0 +1,24 @@
+version: '2.3'
+
+services:
+  selenium_grid:
+    image: dosel/zalenium:3.11.0b
+    entrypoint: ${SELENIUM_GRID_ENTRYPOINT:-/bin/true}
+    ports:
+      - "4444:4444"
+    command:
+      - start
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+      - "/tmp/videos:/home/seluser/videos"
+    privileged: true
+
+  selenium_grid_dependency:
+    image: elgalu/selenium:3.11.0-p5
+
+  owasp-zap:
+    image: owasp/zap2docker-stable:latest
+    ports:
+      - "8090:8090"
+    command:
+      zap.sh -daemon -host 0.0.0.0 -port 8090 -config api.addrs.addr.name=.* -config api.addrs.addr.regex=true -config api.disablekey=true

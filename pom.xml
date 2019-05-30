@@ -286,6 +286,28 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>br.com.softplan.security.zap</groupId>
+                <artifactId>zap-maven-plugin</artifactId>
+                <version>1.2.1-0</version>
+                <configuration>
+                    <targetUrl>http://localhost:8080</targetUrl>
+                    <zapPort>8090</zapPort>
+                    <shouldRunWithDocker>true</shouldRunWithDocker>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>start-zap</id>
+                        <phase>pre-integration-test</phase>
+                        <goals><goal>startZap</goal></goals>
+                    </execution>
+                    <execution>
+                        <id>selenium-analyze</id>
+                        <phase>post-integration-test</phase>
+                        <goals><goal>seleniumAnalyze</goal></goals>
+                    </execution>
+                </executions>
+            </plugin>
 		</plugins>
 	</build>
 </project>
