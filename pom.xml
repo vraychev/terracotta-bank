@@ -257,7 +257,8 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-shade-plugin</artifactId>
-				<executions>
+                <version>3.1.0.1</version>
+                <executions>
 					<execution>
 						<phase>package</phase>
 						<goals>
@@ -326,6 +327,8 @@
                         </goals>
                     </execution>
                 </executions>
+                <configuration>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>br.com.softplan.security.zap</groupId>
