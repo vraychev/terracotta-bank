@@ -285,27 +285,27 @@
 					</execution>
 				</executions>
 			</plugin>
-			<plugin>
-				<groupId>com.spotify</groupId>
-				<artifactId>docker-maven-plugin</artifactId>
-				<version>0.4.13</version>
-				<executions>
-					<execution>
-						<phase>package</phase>
-						<goals>
-							<goal>build</goal>
-						</goals>
-						<configuration>
-							<imageName>${project.build.finalName}</imageName>
-							<imageTags>
-								<imageTag>${project.version}</imageTag>
-								<imageTag>latest</imageTag>
-							</imageTags>
-							<dockerDirectory>.</dockerDirectory>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
+			<!--<plugin>-->
+				<!--<groupId>com.spotify</groupId>-->
+				<!--<artifactId>docker-maven-plugin</artifactId>-->
+				<!--<version>0.4.13</version>-->
+				<!--<executions>-->
+					<!--<execution>-->
+						<!--<phase>package</phase>-->
+						<!--<goals>-->
+							<!--<goal>build</goal>-->
+						<!--</goals>-->
+						<!--<configuration>-->
+							<!--<imageName>${project.build.finalName}</imageName>-->
+							<!--<imageTags>-->
+								<!--<imageTag>${project.version}</imageTag>-->
+								<!--<imageTag>latest</imageTag>-->
+							<!--</imageTags>-->
+							<!--<dockerDirectory>.</dockerDirectory>-->
+						<!--</configuration>-->
+					<!--</execution>-->
+				<!--</executions>-->
+			<!--</plugin>-->
             <plugin>
                 <groupId>org.sonarsource.scanner.maven</groupId>
                 <artifactId>sonar-maven-plugin</artifactId>
@@ -353,35 +353,35 @@
                 </executions>
             </plugin>
 
-            <plugin>
-                <groupId>net.alchim31.maven</groupId>
-                <artifactId>scala-maven-plugin</artifactId>
-                <version>${scala-maven-plugin.version}</version>
-                <executions>
-                    <execution>
-                        <id>scala-compile-first</id>
-                        <phase>process-resources</phase>
-                        <goals>
-                            <goal>add-source</goal>
-                            <goal>compile</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>scala-test-compile</id>
-                        <phase>process-test-resources</phase>
-                        <goals>
-                            <goal>testCompile</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <jvmArgs>
-                        <jvmArg>-Xms512m</jvmArg>
-                        <jvmArg>-Xmx2048m</jvmArg>
-                    </jvmArgs>
-                    <recompileMode>incremental</recompileMode>
-                </configuration>
-            </plugin>
+            <!--<plugin>-->
+                <!--<groupId>net.alchim31.maven</groupId>-->
+                <!--<artifactId>scala-maven-plugin</artifactId>-->
+                <!--<version>${scala-maven-plugin.version}</version>-->
+                <!--<executions>-->
+                    <!--<execution>-->
+                        <!--<id>scala-compile-first</id>-->
+                        <!--<phase>process-resources</phase>-->
+                        <!--<goals>-->
+                            <!--<goal>add-source</goal>-->
+                            <!--<goal>compile</goal>-->
+                        <!--</goals>-->
+                    <!--</execution>-->
+                    <!--<execution>-->
+                        <!--<id>scala-test-compile</id>-->
+                        <!--<phase>process-test-resources</phase>-->
+                        <!--<goals>-->
+                            <!--<goal>testCompile</goal>-->
+                        <!--</goals>-->
+                    <!--</execution>-->
+                <!--</executions>-->
+                <!--<configuration>-->
+                    <!--<jvmArgs>-->
+                        <!--<jvmArg>-Xms512m</jvmArg>-->
+                        <!--<jvmArg>-Xmx2048m</jvmArg>-->
+                    <!--</jvmArgs>-->
+                    <!--<recompileMode>incremental</recompileMode>-->
+                <!--</configuration>-->
+            <!--</plugin>-->
 		</plugins>
 	</build>
     <profiles>
@@ -414,3 +414,4 @@
         </profile>
     </profiles>
 </project>
+
