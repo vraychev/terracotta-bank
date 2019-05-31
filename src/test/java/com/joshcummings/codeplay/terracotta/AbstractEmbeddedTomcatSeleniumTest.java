@@ -31,11 +31,11 @@ public class AbstractEmbeddedTomcatSeleniumTest {
     protected HttpSupport http = new HttpSupport();
 
     @BeforeTest(alwaysRun = true)
-    public void start(ITestContext ctx) {
+    public void start(ITestContext ctx) throws Exception {
         if ("docker".equals(ctx.getName())) {
             docker.startContainer();
         } else {
-//			tomcat.startContainer();
+			tomcat.startContainer();
         }
     }
 
@@ -57,11 +57,11 @@ public class AbstractEmbeddedTomcatSeleniumTest {
     }
 
     @AfterTest(alwaysRun = true)
-    public void stop(ITestContext ctx) {
+    public void stop(ITestContext ctx) throws Exception {
         if ("docker".equals(ctx.getName())) {
             docker.stopContainer();
         } else {
-//			tomcat.stopContainer();
+			tomcat.stopContainer();
         }
     }
 

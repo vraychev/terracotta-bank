@@ -96,7 +96,7 @@ http://www.tooplate.com/view/2080-minimax
 								<input name="password" type="password" class="form-control" id="password" placeholder="Password">
 						  	</div>
 						  	<input type="hidden" name="relay" value="${param['relay']}"/>
-						  	<input type="hidden" name="csrfToken" value="${csrfToken}"/>
+						  	<input id="login-csrf-token" type="hidden" name="csrfToken" value="${csrfToken}"/>
 							<div class="col-md-6 col-sm-6"></div>
 							<div class="col-md-6 col-sm-6">
 								<input name="login" type="submit" class="form-control" value="LOGIN">

@@ -8,7 +8,15 @@
 	<name>Terracotta Bank Web Application</name>
 	<properties>
 		<tomcat.version>8.0.28</tomcat.version>
-	</properties>
+
+        <scala-maven-plugin.version>3.2.2</scala-maven-plugin.version>
+        <scala.version>2.12.1</scala.version>
+
+        <simulationClass>gatling.test.example.simulation.LoginSimulation</simulationClass>
+        <gatling.version>2.2.3</gatling.version>
+        <gatling-maven-plugin.version>2.2.1</gatling-maven-plugin.version>
+
+    </properties>
 
 	<dependencies>
 		<dependency>
@@ -198,6 +206,39 @@
 			<scope>test</scope>
 		</dependency>
 
+        <dependency>
+            <groupId>io.gatling</groupId>
+            <artifactId>gatling-core</artifactId>
+            <version>${gatling.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.gatling</groupId>
+            <artifactId>gatling-http</artifactId>
+            <version>${gatling.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.gatling</groupId>
+            <artifactId>gatling-charts</artifactId>
+            <scope>runtime</scope>
+            <version>${gatling.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.gatling</groupId>
+            <artifactId>gatling-metrics</artifactId>
+            <version>2.3.1</version>
+        </dependency>
+        <dependency>
+            <groupId>io.gatling.highcharts</groupId>
+            <artifactId>gatling-charts-highcharts</artifactId>
+            <scope>runtime</scope>
+            <version>${gatling.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.gatling</groupId>
+            <artifactId>gatling-app</artifactId>
+            <version>${gatling.version}</version>
+        </dependency>
+
 	</dependencies>
 	<build>
 		<!-- <resources> <resource> <directory>src/main/webapp</directory> </resource> 
@@ -308,6 +349,65 @@
                     </execution>
                 </executions>
             </plugin>
+
+            <plugin>
+                <groupId>net.alchim31.maven</groupId>
+                <artifactId>scala-maven-plugin</artifactId>
+                <version>${scala-maven-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>scala-compile-first</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>add-source</goal>
+                            <goal>compile</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>scala-test-compile</id>
+                        <phase>process-test-resources</phase>
+                        <goals>
+                            <goal>testCompile</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <jvmArgs>
+                        <jvmArg>-Xms512m</jvmArg>
+                        <jvmArg>-Xmx2048m</jvmArg>
+                    </jvmArgs>
+                    <recompileMode>incremental</recompileMode>
+                </configuration>
+            </plugin>
 		</plugins>
 	</build>
+    <profiles>
+        <profile>
+            <id>perf-test</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>io.gatling</groupId>
+                        <artifactId>gatling-maven-plugin</artifactId>
+                        <version>${gatling-maven-plugin.version}</version>
+                        <configuration>
+                            <simulationsFolder>src/test/scala</simulationsFolder>
+                            <configFolder>src/test/gatling/conf</configFolder>
+                            <runMultipleSimulations>false</runMultipleSimulations>
+                            <simulationClass>${simulationClass}</simulationClass>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>run-on-test</id>
+                                <phase>test</phase>
+                                <goals>
+                                    <goal>test</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>

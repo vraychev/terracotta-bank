@@ -10,6 +10,7 @@ import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -23,7 +24,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Servlet Filter implementation class WhitelistingXssFilter
  */
-//@WebFilter("/*")
+@WebFilter(urlPatterns = "/*", filterName = "whitelistingXssFilter")
 public class WhitelistingXssFilter implements Filter {
     private static final Pattern onlyAlphaNumeric = Pattern.compile("[A-Za-z0-9\\.\\+@\\$]+");
     private final Logger xssIncidentLogger = LoggerFactory.getLogger("xss-logger");
