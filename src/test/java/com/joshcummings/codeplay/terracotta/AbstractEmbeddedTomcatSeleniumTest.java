@@ -1,5 +1,6 @@
 package com.joshcummings.codeplay.terracotta;
 
+import java.net.MalformedURLException;
 import java.util.concurrent.TimeUnit;
 
 import org.openqa.selenium.Alert;
@@ -40,7 +41,7 @@ public class AbstractEmbeddedTomcatSeleniumTest {
     }
 
     @BeforeTest(alwaysRun = true)
-    public void startSelenium() {
+    public void startSelenium() throws MalformedURLException {
         driver = selenium.start();
     }
 

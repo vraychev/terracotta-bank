@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpHost;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.config.RequestConfig;
@@ -15,7 +16,6 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
-import org.apache.poi.util.IOUtils;
 
 public class HttpSupport {
     protected CloseableHttpClient httpclient = HttpClients.createDefault();

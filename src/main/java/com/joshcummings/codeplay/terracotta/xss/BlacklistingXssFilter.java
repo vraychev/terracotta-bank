@@ -16,7 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * Servlet Filter implementation class WhitelistingXssFilter
  */
-@WebFilter("/*")
+//@WebFilter("/*")
 public class BlacklistingXssFilter implements Filter {
 
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {

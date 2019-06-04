@@ -46,7 +46,7 @@ public class LoginFunctionalTest extends AbstractEmbeddedTomcatSeleniumTest {
 
         Thread.sleep(2000);
 
-        Assert.assertEquals(driver.getCurrentUrl(), "http://terracota-bank:8080/", "You got redirected to: " + driver.getCurrentUrl());
+        Assert.assertEquals(driver.getCurrentUrl(), "http://terracotta-bank.com:8080/", "You got redirected to: " + driver.getCurrentUrl());
     }
 
     @Test(groups = "data", expectedExceptions = NoSuchElementException.class)

@@ -4,8 +4,8 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
 
+import com.joshcummings.codeplay.terracotta.defense.fs.ExtensionCheckingImageDetector;
 import com.joshcummings.codeplay.terracotta.defense.fs.ImageDetector;
-import com.joshcummings.codeplay.terracotta.defense.fs.TikaBasedImageDetector;
 import com.joshcummings.codeplay.terracotta.defense.fs.VirusCheckingImageDetector;
 import com.joshcummings.codeplay.terracotta.defense.http.CookieBasedCsrfTokenRepository;
 import com.joshcummings.codeplay.terracotta.defense.http.CsrfTokenRepository;
@@ -39,7 +39,7 @@ public class ApplicationContextConfigurer implements ServletContextListener {
         context.set(new EmailService());
         context.set(new MessageService());
         context.set(new RedirectCache());
-        context.put(ImageDetector.class, new VirusCheckingImageDetector(new TikaBasedImageDetector()));
+        context.put(ImageDetector.class, new VirusCheckingImageDetector(new ExtensionCheckingImageDetector()));
         context.put(CsrfTokenRepository.class, new CookieBasedCsrfTokenRepository());
         arg0.getServletContext().setAttribute("applicationContext", context);
 

@@ -14,9 +14,9 @@ import java.util.Random;
 
 import javax.imageio.ImageIO;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.message.BasicNameValuePair;
-import org.apache.poi.util.IOUtils;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoAlertPresentException;

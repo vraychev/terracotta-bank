@@ -1,5 +1,6 @@
 package com.joshcummings.codeplay.terracotta.service;
 
+import java.util.Objects;
 import java.util.Properties;
 
 import javax.mail.Message;
@@ -21,7 +22,10 @@ public class EmailService {
     }
 
 
-    public void sendMessage(String to, String subject, String content) {
+    public MimeMessage sendMessage(String to, String subject, String content) {
+        Objects.requireNonNull(to);
+        Objects.requireNonNull(subject);
+        Objects.requireNonNull(content);
         Session session = Session.getDefaultInstance(properties, new javax.mail.Authenticator() {
             protected PasswordAuthentication getPasswordAuthentication() {
                 return new PasswordAuthentication("49ef5e4854ccd94d532dd275b77135b8", "296e1e0085b8aa90e06da635c357ecf1");
@@ -39,5 +43,6 @@ public class EmailService {
         } catch (MessagingException mex) {
             throw new IllegalStateException(mex);
         }
+        return message;
     }
 }

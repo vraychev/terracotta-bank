@@ -7,15 +7,18 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.logging.Logger;
 
-import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.joshcummings.codeplay.terracotta.app.ApplicationAwareServlet;
+
 /**
  * Servlet implementation class DocumentServlet
  */
-public class DocumentServlet extends HttpServlet {
+@WebServlet("/docs")
+public class DocumentServlet extends ApplicationAwareServlet {
     private static final long serialVersionUID = 1L;
     private static final String BASE_DOCUMENT_PATH = "/var/docs";
     private Logger logger = Logger.getLogger(this.getClass().getName());
@@ -23,10 +26,10 @@ public class DocumentServlet extends HttpServlet {
     /**
      * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
      */
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String documentId = request.getParameter("documentId");
         String accessLevel = (String) request.getSession().getAttribute("acccess");
-        File file = new File(BASE_DOCUMENT_PATH, documentId + ".pdf");
+        File file = new File(BASE_DOCUMENT_PATH, documentId);
         if (file.exists()) {
             if ("admin".equals(accessLevel)) {
                 response.setContentType("application/pdf");
@@ -39,12 +42,12 @@ public class DocumentServlet extends HttpServlet {
                     os.flush();
                 }
             } else {
-                response.getWriter().write("Sorry, you don't have access to " + documentId + ".pdf");
+                response.getWriter().write("Sorry, you don't have access to " + documentId);
                 response.setStatus(403);
                 logger.warning("Failed attempt to access " + documentId);
             }
         } else {
-            response.getWriter().write("Sorry, " + documentId + ".pdf does not exist");
+            response.getWriter().write("Sorry, " + documentId + " does not exist");
             response.setStatus(404);
             logger.warning("Failed attempt to access " + documentId);
         }
@@ -53,7 +56,7 @@ public class DocumentServlet extends HttpServlet {
     /**
      * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
      */
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         doGet(request, response);
     }
 

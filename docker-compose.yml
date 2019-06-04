@@ -1,8 +1,13 @@
 version: '2.3'
 
 services:
+  terracotta-bank:
+    image: terracotta-bank:0.0.1-SNAPSHOT
+    ports:
+      - "8080:80"
+
   selenium_grid:
-    image: dosel/zalenium:3.11.0b
+    image: dosel/zalenium
     entrypoint: ${SELENIUM_GRID_ENTRYPOINT:-/bin/true}
     ports:
       - "4444:4444"
@@ -10,7 +15,6 @@ services:
       - start
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock"
-      - "/tmp/videos:/home/seluser/videos"
     privileged: true
 
   selenium_grid_dependency:
