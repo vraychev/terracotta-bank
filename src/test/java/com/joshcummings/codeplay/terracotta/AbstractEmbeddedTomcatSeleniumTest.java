@@ -31,57 +31,57 @@ public class AbstractEmbeddedTomcatSeleniumTest {
     protected DockerSupport docker = new DockerSupport();
     protected HttpSupport http = new HttpSupport();
 
-    @BeforeTest(alwaysRun = true)
+    /*@BeforeTest(alwaysRun = true)
     public void start(ITestContext ctx) throws Exception {
         if ("docker".equals(ctx.getName())) {
             docker.startContainer();
         } else {
 			tomcat.startContainer();
         }
-    }
+    }*/
 
     @BeforeTest(alwaysRun = true)
     public void startSelenium() throws MalformedURLException {
         driver = selenium.start();
     }
 
-    @BeforeTest(alwaysRun = true)
-    public void startProxy(ITestContext ctx) {
-        proxy.start(ctx);
-    }
+//    @BeforeTest(alwaysRun = true)
+//    public void startProxy(ITestContext ctx) {
+//        proxy.start(ctx);
+//    }
 
-    @BeforeTest(groups = "filesystem")
-    public void startClamav(ITestContext ctx) {
-        if ("docker".equals(ctx.getName())) {
-            docker.startClamav();
-        }
-    }
+//    @BeforeTest(groups = "filesystem")
+//    public void startClamav(ITestContext ctx) {
+//        if ("docker".equals(ctx.getName())) {
+//            docker.startClamav();
+//        }
+//    }
 
-    @AfterTest(alwaysRun = true)
-    public void stop(ITestContext ctx) throws Exception {
-        if ("docker".equals(ctx.getName())) {
-            docker.stopContainer();
-        } else {
-			tomcat.stopContainer();
-        }
-    }
+//    @AfterTest(alwaysRun = true)
+//    public void stop(ITestContext ctx) throws Exception {
+//        if ("docker".equals(ctx.getName())) {
+//            docker.stopContainer();
+//        } else {
+//			tomcat.stopContainer();
+//        }
+//    }
 
     @AfterTest(alwaysRun = true)
     public void shutdownSelenium() {
         selenium.stop(driver);
     }
 
-    @AfterTest(alwaysRun = true)
-    public void shutdownProxy() {
-        proxy.stop();
-    }
-
-    @AfterTest(groups = "filesystem")
-    public void stopClamav(ITestContext ctx) {
-        if ("docker".equals(ctx.getName())) {
-            docker.stopClamav();
-        }
-    }
+//    @AfterTest(alwaysRun = true)
+//    public void shutdownProxy() {
+//        proxy.stop();
+//    }
+//
+//    @AfterTest(groups = "filesystem")
+//    public void stopClamav(ITestContext ctx) {
+//        if ("docker".equals(ctx.getName())) {
+//            docker.stopClamav();
+//        }
+//    }
 
     protected void goToPage(String page) {
         driver.get("http://" + TestConstants.host + page);

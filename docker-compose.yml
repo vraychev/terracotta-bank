@@ -4,11 +4,10 @@ services:
   terracotta-bank:
     image: terracotta-bank:0.0.1-SNAPSHOT
     ports:
-      - "8080:80"
+      - "8080:8080"
 
   selenium_grid:
     image: dosel/zalenium
-    entrypoint: ${SELENIUM_GRID_ENTRYPOINT:-/bin/true}
     ports:
       - "4444:4444"
     command:

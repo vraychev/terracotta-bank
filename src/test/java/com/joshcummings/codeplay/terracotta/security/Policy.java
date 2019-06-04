@@ -1,6 +1,6 @@
-package com.joshcummings.codeplay.terracotta.testng.zap
+package com.joshcummings.codeplay.terracotta.security;
 
-enum Policy {
+public enum Policy {
 
     DIRECTORY_BROWSING("0"),
     CROSS_SITE_SCRIPTING("40012,40014,40016,40017"),
@@ -13,6 +13,7 @@ enum Policy {
     REMOTE_OS_COMMAND_INSPECTION("90020"),
     EXTERNAL_REDIRECT("20019"),
     CRLF_INJECTION("40003")
+    ;
     //SOURCE_CODE_DISCLOSURE("42,10045,20017"),
     //SHELL_SHOCK( "10048"),
     //REMOTE_CODE_EXECUTION("20018"),
@@ -24,13 +25,13 @@ enum Policy {
     //INSECURE_HTTP_METHODS("90028"),
     //PARAMETER_POLLUTION("20014")
 
-    private final String scannerIds
+    private final String scannerIds;
 
     Policy(String scannerIds) {
-        this.scannerIds = scannerIds
+        this.scannerIds = scannerIds;
     }
 
-    String getScannerIds() {
-        scannerIds
+    public String getScannerIds() {
+        return scannerIds;
     }
 }
