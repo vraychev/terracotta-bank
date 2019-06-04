@@ -9,6 +9,7 @@ import com.joshcummings.codeplay.terracotta.defense.fs.ImageDetector;
 import com.joshcummings.codeplay.terracotta.defense.fs.VirusCheckingImageDetector;
 import com.joshcummings.codeplay.terracotta.defense.http.CookieBasedCsrfTokenRepository;
 import com.joshcummings.codeplay.terracotta.defense.http.CsrfTokenRepository;
+import com.joshcummings.codeplay.terracotta.email.gateway.EmailGateway;
 import com.joshcummings.codeplay.terracotta.service.AccountService;
 import com.joshcummings.codeplay.terracotta.service.CheckService;
 import com.joshcummings.codeplay.terracotta.service.EmailService;
@@ -36,7 +37,7 @@ public class ApplicationContextConfigurer implements ServletContextListener {
         context.set(new AccountService());
         context.set(new UserService());
         context.set(new CheckService());
-        context.set(new EmailService());
+        context.set(new EmailService(new EmailGateway()));
         context.set(new MessageService());
         context.set(new RedirectCache());
         context.put(ImageDetector.class, new VirusCheckingImageDetector(new ExtensionCheckingImageDetector()));

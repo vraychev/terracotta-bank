@@ -37,7 +37,7 @@ public class LoginServlet extends ApplicationAwareServlet {
             Set<Account> accounts = context.get(AccountService.class).findByUsername(user.getUsername());
 
             // replace any pre-login csrf tokens
-            context.get(CsrfTokenRepository.class).replaceToken(request, response);
+//            context.get(CsrfTokenRepository.class).replaceToken(request, response);
 
             request.getSession().setAttribute("authenticatedUser", user);
             request.getSession().setAttribute("authenticatedAccounts", accounts);

@@ -7,20 +7,25 @@ import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
-import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+
+import com.joshcummings.codeplay.terracotta.email.gateway.EmailGateway;
 
 public class EmailService {
     private String from = "no-reply-terracotta-bank@mailinator.com";
     private String host = "in-v3.mailjet.com";
     private Properties properties = System.getProperties();
+    private EmailGateway emailGateway;
 
     {
         properties.setProperty("mail.smtp.host", host);
         properties.setProperty("mail.smtp.auth", "true");
     }
 
+    public EmailService(EmailGateway emailGateway) {
+        this.emailGateway = emailGateway;
+    }
 
     public MimeMessage sendMessage(String to, String subject, String content) {
         Objects.requireNonNull(to);
@@ -39,7 +44,7 @@ public class EmailService {
             message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
             message.setSubject(subject);
             message.setText(content);
-            Transport.send(message);
+            emailGateway.sendEmail(message);
         } catch (MessagingException mex) {
             throw new IllegalStateException(mex);
         }

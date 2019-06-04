@@ -1,20 +1,20 @@
 package com.joshcummings.codeplay.terracotta.app.service
 
 import javax.mail.Message
-import javax.mail.Transport
 
+import com.joshcummings.codeplay.terracotta.email.gateway.EmailGateway
 import com.joshcummings.codeplay.terracotta.service.EmailService
 
 import spock.lang.Specification
-import spock.util.mop.ConfineMetaClassChanges
 
-@ConfineMetaClassChanges([Transport])
 class EmailServiceSpec extends Specification {
 
     EmailService emailService
+    EmailGateway emailGateway
 
     def setup() {
-        emailService = new EmailService()
+        emailGateway = Mock(EmailGateway)
+        emailService = new EmailService(emailGateway)
     }
 
     def "Email is properly sent"() {
@@ -31,7 +31,8 @@ class EmailServiceSpec extends Specification {
             mailMessage.getRecipients(Message.RecipientType.TO)[0].toString() == recipient
             mailMessage.subject == subject
             mailMessage.content == content
-//            Transport.desiredAssertionStatus()
+            1 * emailGateway.sendEmail(_)
+
     }
 
 }

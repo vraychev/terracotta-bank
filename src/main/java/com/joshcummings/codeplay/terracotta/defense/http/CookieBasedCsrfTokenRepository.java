@@ -27,7 +27,6 @@ public class CookieBasedCsrfTokenRepository implements CsrfTokenRepository {
 
     @Override
     public String makeToken(HttpServletRequest request) {
-        // thanks to https://stackoverflow.com/questions/41107/how-to-generate-a-random-alpha-numeric-string/41156#41156
         return new BigInteger(130, rnd).toString(32);
     }
 
@@ -36,7 +35,7 @@ public class CookieBasedCsrfTokenRepository implements CsrfTokenRepository {
                            HttpServletRequest request,
                            HttpServletResponse response) {
         Cookie c = new Cookie("csrfToken", token);
-        c.setHttpOnly(true);
+//        c.setHttpOnly(true);
         c.setSecure(request.getProtocol().equals("https"));
         c.setMaxAge(30 * 60); // 30 minutes
 
