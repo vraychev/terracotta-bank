@@ -16,26 +16,6 @@ public abstract class ServiceSupport {
         return runQuery(query, ps -> ps, inflater);
     }
 
-    public <T> Set<T> runQuerySafely(String query, String[] params, Function<ResultSet, T> inflater) {
-        Set<T> results = new HashSet<T>();
-        try {
-            Connection conn = DriverManager.getConnection(DATABASE_URL);
-            PreparedStatement ps = conn.prepareStatement(query);
-
-            for (int i = 0; i < params.length; i++) {
-                ps.setString(i, params[i]);
-            }
-
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                results.add(inflater.apply(rs));
-            }
-        } catch (SQLException e) {
-            throw new IllegalArgumentException(e);
-        }
-        return results;
-    }
-
     public <T> Set<T> runQuery(String query, Preparer preparer, Function<ResultSet, T> inflater) {
         Set<T> results = new HashSet<T>();
         try (Connection conn = DriverManager.getConnection(DATABASE_URL);
