@@ -10,7 +10,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.joshcummings.codeplay.terracotta.app.ApplicationAwareServlet;
-import com.joshcummings.codeplay.terracotta.defense.http.CsrfTokenRepository;
 import com.joshcummings.codeplay.terracotta.model.Account;
 import com.joshcummings.codeplay.terracotta.model.User;
 import com.joshcummings.codeplay.terracotta.service.AccountService;
