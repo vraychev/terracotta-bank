@@ -21,7 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-//@WebFilter(urlPatterns = "/*", filterName = "whitelistingXs sFilter")
+@WebFilter(urlPatterns = "/*", filterName = "whitelistingXs sFilter")
 public class WhitelistingXssFilter implements Filter {
     private static final Pattern onlyAlphaNumeric = Pattern.compile("[A-Za-z0-9\\.\\+@\\$]+");
     private final Logger xssIncidentLogger = LoggerFactory.getLogger("xss-logger");
