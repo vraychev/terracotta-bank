@@ -13,7 +13,7 @@ import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-//@WebFilter(value = "/*", dispatcherTypes = {DispatcherType.REQUEST, DispatcherType.FORWARD, DispatcherType.ERROR})
+@WebFilter(value = "/*", dispatcherTypes = {DispatcherType.REQUEST, DispatcherType.FORWARD, DispatcherType.ERROR})
 public class SecureHttpHeaderFilter implements Filter {
 
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
@@ -27,7 +27,7 @@ public class SecureHttpHeaderFilter implements Filter {
                 ((HttpServletResponse) response).setHeader("X-XSS-Protection", "1;mode=block");
                 ((HttpServletResponse) response).setHeader("Content-Security-Policy",
                     "default-src 'self';"
-                        + "script-src 'self' 'unsafe-inline' code.jquery.com;"
+                        + "script-src 'self' code.jquery.com;"
                         + "img-src 'self' blob: data: ;"
                         + "style-src 'self' fonts.googleapis.com;"
                         + "font-src 'self' fonts.googleapis.com fonts.gstatic.com data: ;"
