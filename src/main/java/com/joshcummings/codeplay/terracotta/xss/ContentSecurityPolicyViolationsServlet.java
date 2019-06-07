@@ -19,9 +19,6 @@ import org.slf4j.LoggerFactory;
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 
-/**
- * Servlet implementation class ContentSecurityPolicyViolationsServlet
- */
 @WebServlet("/cspViolation")
 public class ContentSecurityPolicyViolationsServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;

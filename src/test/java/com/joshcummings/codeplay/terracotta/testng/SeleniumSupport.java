@@ -1,31 +1,41 @@
 package com.joshcummings.codeplay.terracotta.testng;
 
-import com.joshcummings.codeplay.terracotta.security.SecurityScannerEventListener;
-import com.joshcummings.codeplay.terracotta.security.ZapProxyScanner;
+import java.net.MalformedURLException;
+import java.net.URL;
+
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.firefox.FirefoxProfile;
-
-import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.events.EventFiringWebDriver;
-import org.openqa.selenium.support.events.WebDriverEventListener;
 
-import java.net.MalformedURLException;
-import java.net.URL;
+import com.joshcummings.codeplay.terracotta.security.SecurityScannerEventListener;
+import com.joshcummings.codeplay.terracotta.security.ZapProxyScanner;
+
+import io.github.bonigarcia.wdm.WebDriverManager;
 
 public class SeleniumSupport {
 
     private static String ZAP_HOST = "localhost";
     private static Integer ZAP_PORT = 8090;
 
-    public WebDriver start() {
-        /*WebDriverManager.firefoxdriver().setup();
+    public WebDriver start(String driverType) throws Exception {
+        if ("chrome".equals(driverType)) {
+            return startChrome();
+        } else if ("firefox".equals(driverType)) {
+            return startFirefox();
+        } else {
+             throw new Exception("Incompatible driver type");
+        }
+    }
+
+    private WebDriver startFirefox() {
+        WebDriverManager.firefoxdriver().setup();
         FirefoxProfile profile = new FirefoxProfile();
 
 //        profile.setPreference("network.proxy.type", 1);
@@ -37,8 +47,7 @@ public class SeleniumSupport {
         FirefoxOptions options = new FirefoxOptions();
         options.setProfile(profile);
 
-        return new FirefoxDriver(options);*/
-        return startChromeDriver();
+        return new FirefoxDriver(options);
     }
 
     public void stop(WebDriver driver) {
@@ -47,7 +56,7 @@ public class SeleniumSupport {
         }
     }
 
-    private WebDriver startChromeDriver() {
+    private WebDriver startChrome() {
         DesiredCapabilities capabilities = DesiredCapabilities.chrome();
         ChromeOptions chromeOptions = new ChromeOptions();
         chromeOptions.addArguments("--start-maximized");

@@ -10,8 +10,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebFilter;
 
-// Also uncomment in web.xml
-@WebFilter(filterName = "characterEncodingFilter", urlPatterns = "/*")
+//@WebFilter(filterName = "characterEncodingFilter", urlPatterns = "/*")
 public class CharacterEncodingFilter implements Filter {
 
     @Override
